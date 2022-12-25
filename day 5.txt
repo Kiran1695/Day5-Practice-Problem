@@ -1,0 +1,442 @@
+Q1. Write a program that reads 5 Random 3 Digit values and then outputs the minimum
+and the maximum value
+Ans:
+#Script
+#####################################################################
+# This is how to declare / initialize an array:
+arrayName=("$@")
+
+# Use choose first element of array as initial values for min/max;
+# (Defensive programming) - this is a language-agnostic 'gotcha' when
+# finding min/max ;)
+max=${arrayName[0]}
+min=${arrayName[0]}
+
+# Loop through all elements in the array
+for i in "${arrayName[@]}"
+do
+    # Update max if applicable
+    if [[ "$i" -gt "$max" ]]; then
+        max="$i"
+    fi
+
+    # Update min if applicable
+    if [[ "$i" -lt "$min" ]]; then
+        min="$i"
+    fi
+done
+
+# Output results:
+echo "Max is: $max"
+echo "Min is: $min"
+#####################################################################
+
+➜  /Users/Desktop/Assignment/kiran/Day5  ./max_min.sh 123 345 120 456 987
+Max is: 987
+Min is: 120
+______________________________________________________________________________________________
+
+Q. 2 Write a program that takes day and month from the command line and prints true if
+day of month is between March 20 and June 20, false otherwise.
+
+Ans:
+#Script
+#####################################################################
+#!/bin/bash
+
+read -p "Enter Date: " date
+read -p "Enter Month: " Month
+
+# should validate input: non-blank, numeric
+
+combo=0
+res="false"
+st=1
+
+if [ $Month -ge 3 -a $Month -le 6 ]; then
+    # 30 for Apr, Jun
+    # 31 for Mar, May
+    dlimit=$((30 + (Month % 2)))
+    if [ $date -ge 1 -a $date -le $dlimit ]; then
+        combo=$(((Month * 100) + date))
+        # true Mar 20 to Jun 20
+        if [ $combo -ge 320 -a $combo -le 620 ]; then
+            res="true"
+            st=0
+        fi
+    fi
+fi
+
+echo "$Month/$date $res"
+exit $st
+#####################################################################
+
+➜  /Users/Desktop/Assignment/kiran/Day5  ./day_month_check.sh
+Enter Date: 25
+Enter Month: 5
+5/25 true
+➜  /Users/Desktop/Assignment/kiran/Day5  ./day_month_check.sh
+Enter Date: 19
+Enter Month: 2
+2/19 false
+➜  /Users/Desktop/Assignment/kiran/Day5  ./day_month_check.sh
+Enter Date: 25
+Enter Month: 6
+6/25 false
+______________________________________________________________________________________________
+
+Q.3 Write a program that takes a year as input and outputs the Year is a Leap Year or not
+a Leap Year. A Leap Year checks for 4 Digit Number, Divisible by 4 and not 100 unless
+divisible by 400.
+
+#Script
+#####################################################################
+leap=$1
+echo taking year as $leap
+if [ `expr $leap % 400` -eq 0 ]
+then
+echo leap year
+elif [ `expr $leap % 100` -eq 0 ]
+then
+echo not a leap year
+elif [ `expr $leap % 4` -eq 0 ]
+then
+echo leap year
+else
+echo not a leap year
+fi
+#####################################################################
+
+➜  /Users/Desktop/Assignment/kiran/Day5  touch leap_year.sh      
+➜  /Users/Desktop/Assignment/kiran/Day5  chmod +x leap_year.sh      
+➜  /Users/Desktop/Assignment/kiran/Day5  ./leap_year.sh 2004 
+taking year as 2004
+leap year
+➜  /Users/Desktop/Assignment/kiran/Day5  ./leap_year.sh 2005
+taking year as 2005
+not a leap year
+______________________________________________________________________________________________
+
+Q.4. Write a program to simulate a coin flip and print out "Heads" or "Tails" accordingly.
+
+#Script
+#####################################################################
+#!/bin/bash
+FLIP=$(($(($RANDOM%10))%2))
+if [ $FLIP -eq 1 ];then
+    echo "heads"
+else
+    echo "tails"
+fi
+#####################################################################
+
+➜  /Users/Desktop/Assignment/kiran/Day5  ./coin_flip.sh     
+heads
+➜  /Users/Desktop/Assignment/kiran/Day5  ./coin_flip.sh
+tails
+➜  /Users/Desktop/Assignment/kiran/Day5  ./coin_flip.sh
+tails
+➜  /Users/Desktop/Assignment/kiran/Day5  ./coin_flip.sh
+heads
+➜  /Users/Desktop/Assignment/kiran/Day5  ./coin_flip.sh
+heads
+______________________________________________________________________________________________
+
+Q. Read a single digit number and write the number in word?
+
+echo "Enter number : "
+read n
+ 
+len=$(echo $n | wc -c)
+len=$(( $len - 1 ))
+ 
+echo "Your number $n in words : "
+for (( i=1; i<=$len; i++ ))
+do
+   # get one digit at a time
+    digit=$(echo $n | cut -c $i)
+   # use case control structure to find digit equivalent in words 
+    case $digit in
+        0) echo "zero " ;;
+        1) echo "one " ;;
+        2) echo "two " ;;
+        3) echo "three " ;;
+        4) echo "four " ;;
+        5) echo "five " ;;
+        6) echo "six " ;;
+        7) echo "seven " ;;
+        8) echo "eight " ;;
+        9) echo "nine " ;;
+    esac	
+done
+
+
+➜  /Users/Desktop/Assignment/kiran/Day5  ./get_word_of_digit.sh
+Enter number : 
+5
+Your number 5 in words : 
+five 
+______________________________________________________________________________________________
+
+Q. Read a Number and Display the week day (Sunday, Monday,…)? 
+
+echo "enter a number"
+read n
+case $n in
+1) echo "Sunday" ;;
+2) echo "Monday" ;;
+3) echo "Tuesday" ;;
+4) echo "Wednesday" ;;
+5) echo "Thursday" ;;
+6) echo "Friday" ;;
+7) echo "Saturday" ;;
+*) echo "enter value between 1 to 7" ;;
+esac
+
+
+➜  /Users/Desktop/Assignment/kiran/Day5  chmod +x get_week_day.sh     
+➜  /Users/Desktop/Assignment/kiran/Day5  ./get_week_day.sh     
+enter a number
+2
+Monday
+➜  /Users/Desktop/Assignment/kiran/Day5  ./get_week_day.sh
+enter a number
+5
+Thursday
+______________________________________________________________________________________________
+
+Q. Read a Number 1, 10, 100, 1000, etc and display unit, ten, hundred,…?
+
+echo "enter a number"
+read n
+case $n in
+1) echo "One" ;;
+10) echo "Ten" ;;
+100) echo "Hundred" ;;
+1000) echo "Thousand" ;;
+10000) echo "Ten Thousand" ;;
+100000) echo "One Lac" ;;
+1000000) echo "Ten Lac" ;;
+*) echo "enter value in pattern(1, 10, 100, 1000, ...)" ;;
+esac
+
+➜  /Users/Desktop/Assignment/kiran/Day5  ./get_word_digit.sh
+enter a number
+1
+One
+➜  /Users/Desktop/Assignment/kiran/Day5  ./get_word_digit.sh
+enter a number
+100
+Hundred
+➜  /Users/Desktop/Assignment/kiran/Day5  ./get_word_digit.sh 
+enter a number
+10000
+Ten Thousand
+______________________________________________________________________________________________
+
+Q.Enter 3 Numbers do following arithmetic operation and find the one that 
+is maximum and minimum
+1. a + b * c 3. c + a / b
+2. a % b + c 4. a * b + c
+
+
+a=$1
+b=$2
+c=$3
+
+arrayName=()
+result1=$((a+b*c))
+arrayName+=($result1)
+result2=$((c+a/b))
+arrayName+=($result2)
+result3=$((a%b+c))
+arrayName+=($result3)
+result4=$((a*b+c))
+arrayName+=($result4)
+
+max=${arrayName[0]}
+
+for i in "${arrayName[@]}"
+do
+    # Update max if applicable
+    if [[ "$i" -gt "$max" ]]; then
+        max="$i"
+    fi
+
+done
+
+echo "1: $result1, 2: $result2, 3: $result3, 4: $result4"
+echo "Max is: $max"
+
+➜  /Users/Desktop/Assignment/kiran/Day5  ./arithmetic.sh 1 2 3
+1: 7, 2: 3, 3: 4, 4: 5
+Max is: 7
+______________________________________________________________________________________________
+
+Q. Unit Conversion 
+a. 1ft = 12 in then 42 in = ? ft 
+b. Rectangular Plot of 60 feet x 40 feet in meters
+c. Calculate area of 25 such plots in acres
+
+read -p "Enter Unit: " src_unit
+read -p "Enter value: " value
+read -p "Enter Convert unit: " dest_unit
+
+case "$src_unit-$dest_unit" in
+    inch-feet)
+      new_value=$(( $value / 12 ))
+      ;;
+    feet-inch)
+      new_value=$(( $value * 12 ))
+      ;;
+    feet-meter)
+      fraction=$(( 328/100 ))
+      new_value=$(( $value / $fraction ))
+      ;;
+    meter-feet)
+        fraction=$(( 328/100 ))
+      new_value=$(( $value * $fraction ))
+      ;;
+    *)  echo "I don't know how to convert $src_unit to $dest_unit"
+      ;;
+esac
+
+echo "$value $src_unit = $new_value $dest_unit"
+
+
+➜  /Users/Desktop/Assignment/kiran/Day5  chmod +x unit_converter.sh 
+➜  /Users/Desktop/Assignment/kiran/Day5  ./unit_converter.sh  
+Enter Unit: inch
+Enter value: 60
+Enter Convert unit: feet
+60 inch = 5 feet
+➜  /Users/Desktop/Assignment/kiran/Day5  ./unit_converter.sh
+Enter Unit: feet
+Enter value: 5
+Enter Convert unit: inch
+5 feet = 60 inch
+➜  /Users/Desktop/Assignment/kiran/Day5  ./unit_converter.sh
+Enter Unit: feet
+Enter value: 10
+Enter Convert unit: meter
+10 feet = 0 meter
+➜  /Users/Desktop/Assignment/kiran/Day5  ./unit_converter.sh
+Enter Unit: feet
+Enter value: 100
+Enter Convert unit: meter
+100 feet = 33 meter
+➜  /Users/Desktop/Assignment/kiran/Day5  ./unit_converter.sh
+Enter Unit: meter
+Enter value: 33
+Enter Convert unit: feet
+33 meter = 99 feet
+➜  /Users/Desktop/Assignment/kiran/Day5  B
+______________________________________________________________________________________________
+
+Q. Use Random Function (( RANDOM )) to get Single Digit
+
+➜  /Users/Desktop/Assignment/kiran/Day5  echo $(( $RANDOM % 10 ))
+0
+➜  /Users/Desktop/Assignment/kiran/Day5  echo $(( $RANDOM % 10 ))
+7
+➜  /Users/Desktop/Assignment/kiran/Day5  echo $(( $RANDOM % 10 ))
+3
+➜  /Users/Desktop/Assignment/kiran/Day5  echo $(( $RANDOM % 10 ))
+2
+
+______________________________________________________________________________________________
+
+Q. Use Random to get Dice Number between 1 to 6
+
+➜  /Users/Desktop/Assignment/kiran/Day5  echo $(( ( RANDOM % 6 ) + 1 ))
+4
+➜  /Users/Desktop/Assignment/kiran/Day5  echo $(( ( RANDOM % 6 ) + 1 ))
+5
+➜  /Users/Desktop/Assignment/kiran/Day5  echo $(( ( RANDOM % 6 ) + 1 ))
+1
+➜  /Users/Desktop/Assignment/kiran/Day5  echo $(( ( RANDOM % 6 ) + 1 ))
+3
+➜  /Users/Desktop/Assignment/kiran/Day5  echo $(( ( RANDOM % 6 ) + 1 ))
+5
+➜  /Users/Desktop/Assignment/kiran/Day5  echo $(( ( RANDOM % 6 ) + 1 ))
+3
+➜  /Users/Desktop/Assignment/kiran/Day5  echo $(( ( RANDOM % 6 ) + 1 ))
+5
+➜  /Users/Desktop/Assignment/kiran/Day5  echo $(( ( RANDOM % 6 ) + 1 ))
+2
+➜  /Users/Desktop/Assignment/kiran/Day5  echo $(( ( RANDOM % 6 ) + 1 ))
+2
+➜  /Users/Desktop/Assignment/kiran/Day5  echo $(( ( RANDOM % 6 ) + 1 ))
+6
+
+______________________________________________________________________________________________
+
+Q. Add two Random Dice Number and Print the Result
+
+#! /bin/bash
+dice1=$(((RANDOM%6)+1))
+dice2=$(((RANDOM%6)+1))
+sum=$((dice1+dice2))
+echo $sum
+
+
+➜  /Users/Desktop/Assignment/kiran/Day5  chmod +x add_dice_value.sh 
+➜  /Users/Desktop/Assignment/kiran/Day5  ./add_dice_value.sh  
+➜  /Users/Desktop/Assignment/kiran/Day5  ./add_dice_value.sh
+➜  /Users/Desktop/Assignment/kiran/Day5  ./add_dice_value.sh
+5
+➜  /Users/Desktop/Assignment/kiran/Day5  ./add_dice_value.sh
+2
+➜  /Users/Desktop/Assignment/kiran/Day5  ./add_dice_value.sh
+1
+➜  /Users/Desktop/Assignment/kiran/Day5  ./add_dice_value.sh
+6
+➜  /Users/Desktop/Assignment/kiran/Day5  ./add_dice_value.sh
+3
+➜  /Users/Desktop/Assignment/kiran/Day5  ./add_dice_value.sh
+9
+➜  /Users/Desktop/Assignment/kiran/Day5  ./add_dice_value.sh
+3
+➜  /Users/Desktop/Assignment/kiran/Day5  ./add_dice_value.sh
+9
+➜  /Users/Desktop/Assignment/kiran/Day5  ./add_dice_value.sh
+10
+
+______________________________________________________________________________________________
+
+Q. Write a program that reads 5 Random 2 Digit values , then find their sum and the average
+
+#!/bin/bash
+
+echo "Please enter your first number: "
+read a
+echo "Second number: "
+read b
+echo "Third number: "
+read c
+echo "Fourth number: "
+read d
+echo "Fifth number: "
+read e
+
+sum=$(($a + $b + $c + $d + $e))
+avg=$(echo $sum / 5 | bc -l ) 
+
+echo "The sum of these numbers is: " $sum
+echo "The average of these numbers is: " $avg
+_________________________________________________________________________________________
+➜  /Users/Desktop/Assignment/kiran/Day5  ./sum_average.sh      
+Please enter your first number: 
+23
+Second number: 
+76
+Third number: 
+90
+Fourth number: 
+74
+Fifth number: 
+45
+The sum of these numbers is:  308
+The average of these numbers is:  61.60000000000000000000
+
+______________________________________________________________________________________________
